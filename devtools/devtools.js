@@ -66,7 +66,9 @@ function submitResponse(filteredData, continueParams) {
 
 let debugee = null;
 function setupDebugger(target) {
-  debugee = { tabId: target.id };
+  // debugee = { tabId: target.id };
+  debugee = { tabId: target };
+  alert("We are at line 71 " + JSON.stringify(target));
 
   chrome.debugger.attach(debugee, "1.0", () => {
     chrome.debugger.sendCommand(debugee, "Fetch.enable", { patterns: [{ urlPattern: '*' }] });
@@ -77,7 +79,8 @@ function setupDebugger(target) {
     var continueParams = {
       requestId: params.requestId,
     };
-    if (source.tabId === target.id) {
+    // if (source.tabId === target.id) {
+      if (source.tabId === target) {
       if (method === "Fetch.requestPaused") {
         chrome.storage.local.get("replaceData", (storageData) => {
           let filteredData = checkURLTagged(params.request.url, storageData.replaceData);
@@ -126,11 +129,27 @@ function setupActions() {
   })
 }
 
+function sendMessage()
+{
+  chrome.runtime.sendMessage({greeting: "hello"}, (response) => { 
+    console.log("sent the message, waiting for response");
+    console.log(JSON.stringify(response));
+    if(response != null) {
+      alert("This was returned" + JSON.stringify(response));
+      setupDebugger(response.message);
+    }
+    else
+    {
+      alert("message response was null or undefined");
+    }
+ });
+}
+
 function startOverride() {
-    let queryOptions = { active: true, currentWindow: true };
-    chrome.tabs.query(queryOptions, (tab) => {
-      setupDebugger(tab[0]);
-    });
+    // yeah, I know some of this is redundant and unnecessary but it's working so don't complain.
+    console.log("About to send a message.....");
+    sendMessage();
+
 }
 function pinTab(panelWindow) {
   extPanelWindow = panelWindow;
@@ -139,3 +158,5 @@ function pinTab(panelWindow) {
 function destroyDebugger() {
   chrome.debugger.detach(debugee);
 }
+
+

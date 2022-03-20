@@ -1,3 +1,24 @@
+#########################################################################################
+### Pasupathi Rajamanickam created this! I made some changes to get it to work for ME ###
+#########################################################################################
+
+The changes I made and why:
+
+Changed the manifest to v3 in order to use a backround service worker to get the tabID.
+Why? Because I believe most issues people are because the there is a known bug getting the active tab id from the devpanel and requires a background service worker so I added one. There is also a bug with getting the tab ID from a service worker.....so that's why there is a settimeout() in there. Don't ask.....
+
+I am not good with Javscript so please understand there are most likely better ways do accomplish everything I did. Plus I guess I ran into two BUGS with Chrome so a combonation of things that SHOULD work but don't and my limited experience with JS made this....interesting but it appears to be working.
+
+### NEW USAGE ###
+
+With the changes I made, you can have the devtools panel open and it will work for ANY tab, not just the tab that you are inspecting.
+If you are using multiple WINDOWS of chrome, you MUST have at least TWO windows open in the tab you want to use the Respone Override. I think this is because I am using chrome.tabs.onActivated so you can't "unactivate" one tab. I'm assuming you can have two active tabs but one for each window open so....have two tabs open. 
+
+I have error handling (kind of) in the event the tabid being returned is undefined or null. It'll just throw an alert on the page and not send a null value to the main function causing more errors. 
+
+
+###############
+
 # chrome-response-override
 Chrome devtools extension to modify response on the fly, no external app installation required.
 
